@@ -49,7 +49,7 @@ function medianCell(description, tool) {
 
 const header = ['Tool', ...descriptions.map((description) => `${description.name}<br>${description.operations.toLocaleString('en-US')} ops, ${description.size}`)];
 const alignment = ['---', ...descriptions.map(() => '---:')];
-const rows = tools.map((tool) => [`\`${toolVersions[tool]}\``, ...descriptions.map((description) => medianCell(description, tool))]);
+const rows = tools.map((tool) => [`\`${tool}@${toolVersions[tool]}\``, ...descriptions.map((description) => medianCell(description, tool))]);
 const table = [header, alignment, ...rows].map((cells) => `| ${cells.join(' | ')} |`).join('\n');
 
 const [runUrl, runDate] = readResult('run.txt').trim().split('\n');
