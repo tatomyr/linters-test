@@ -1,0 +1,7 @@
+{
+  "name": "linters-test",
+  "description": "Speed benchmark of OpenAPI linters on public API descriptions",
+  "scripts": {
+    "render": "node scripts/render-readme.mjs"
+  }
+}

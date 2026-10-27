@@ -1,0 +1,87 @@
+name: Benchmark
+
+on: workflow_dispatch
+
+permissions:
+  contents: write
+
+concurrency:
+  group: benchmark
+  cancel-in-progress: false
+
+env:
+  TIMEFORMAT: "%R"
+  RUNS: 5
+  PAUSE_SECONDS: 5
+  TIMEOUT_SECONDS: 300
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+
+      - name: Install linters
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          npm install -g @redocly/cli@latest @quobix/vacuum@latest @stoplight/spectral-cli@latest @scalar/cli@latest
+          curl -fsSL https://go.speakeasy.com/cli-install.sh | sh
+
+      - name: Record versions and machine
+        run: |
+          rm -rf results && mkdir results
+          {
+            echo "redocly @redocly/cli@$(redocly --version)"
+            echo "vacuum @quobix/vacuum@$(vacuum version)"
+            echo "spectral @stoplight/spectral-cli@$(spectral --version)"
+            echo "scalar @scalar/cli@$(scalar --version)"
+            echo "speakeasy speakeasy-api/speakeasy@$(speakeasy --version | head -1 | awk '{print $NF}')"
+          } | tee results/versions.txt
+          echo "$(lscpu | sed -n 's/^Model name: *//p'), $(nproc) cores, $(free -g | awk '/^Mem/ {print $2}') GB RAM, $(uname -sr), Node $(node --version)" | tee results/machine.txt
+          echo "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" > results/run.txt
+          date -u +"%Y-%m-%d %H:%M UTC" >> results/run.txt
+
+      # Pinned commits, listed in the README. DigitalOcean and Azure Compute are multi-file, so they get bundled.
+      - name: Fetch descriptions
+        run: |
+          curl -fsSL -o openapi/stripe.yaml https://raw.githubusercontent.com/stripe/openapi/30d3391cc09a0f67ad29bee002f570811b19e1da/openapi/spec3.yaml
+          curl -fsSL -o openapi/aws-ec2.yaml https://raw.githubusercontent.com/APIs-guru/openapi-directory/f04b8d0bcd39c52e1cf3ad7a5fe744709832ae49/APIs/amazonaws.com/ec2/2016-11-15/openapi.yaml
+          curl -fsSL -o openapi/github.yaml https://raw.githubusercontent.com/github/rest-api-description/9f6ad3b0ba6f7ef9619adb7135a1a56de62ed2d3/descriptions/api.github.com/api.github.com.yaml
+          curl -fsSL -o openapi/cloudflare.yaml https://raw.githubusercontent.com/cloudflare/api-schemas/f20240cf7d68bcebb138ab5ed5240ed523cb10ef/openapi.yaml
+          git clone -q --depth 1 --revision 8041307476bda69ea1640dcf44b220dd653c6808 https://github.com/digitalocean/openapi digitalocean
+          redocly bundle digitalocean/specification/DigitalOcean-public.v2.yaml -o openapi/digitalocean.yaml
+          git clone -q --depth 1 --filter=blob:none --sparse --revision 8b747d606f494c1ceb4db2de65d657fa00ed0c4f https://github.com/Azure/azure-rest-api-specs azure
+          git -C azure sparse-checkout set specification/common-types specification/compute/resource-manager/Microsoft.Compute/Compute/common-types specification/compute/resource-manager/Microsoft.Compute/Compute/stable/2026-04-01
+          redocly bundle azure/specification/compute/resource-manager/Microsoft.Compute/Compute/stable/2026-04-01/ComputeRP.json -o openapi/azure.yaml
+          for file in openapi/*.yaml; do echo "$(basename $file .yaml) $(redocly stats $file --format json | jq .operations.total) $(stat -c %s $file)"; done | tee results/descriptions.txt
+
+      - name: vacuum
+        run: scripts/bench.sh vacuum vacuum lint
+
+      - name: Spectral
+        run: scripts/bench.sh spectral spectral lint --ruleset .spectral.yaml
+
+      - name: Redocly CLI
+        run: scripts/bench.sh redocly redocly lint
+
+      - name: Scalar CLI
+        run: scripts/bench.sh scalar scalar document lint
+
+      - name: Speakeasy CLI
+        run: scripts/bench.sh speakeasy env -u GITHUB_ACTIONS speakeasy lint openapi --non-interactive --schema
+
+      - name: Render README.md
+        run: node scripts/render-readme.mjs
+
+      - name: Commit results
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add README.md results
+          git commit -m "chore: update benchmark results"
+          git push
