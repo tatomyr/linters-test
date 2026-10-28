@@ -1,0 +1,5 @@
+redocly 2.71.2
+vacuum 0.35.7
+spectral 6.17.0
+scalar 2.13.2
+speakeasy 1.805.0

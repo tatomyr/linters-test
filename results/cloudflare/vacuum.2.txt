@@ -1,0 +1,49 @@
+   
+ ██╗   ██╗ █████╗  ██████╗██╗   ██╗██╗   ██╗███╗   ███╗ 《《《─═─═── ·* · ˙*
+ ██║   ██║██╔══██╗██╔════╝██║   ██║██║   ██║████╗ ████║《《《──═─═──· ··* ˙˙
+ ██║   ██║███████║██║     ██║   ██║██║   ██║██╔████╔██║《《《───═─═─··· ˙˙ ˙
+ ╚██╗ ██╔╝██╔══██║██║     ██║   ██║██║   ██║██║╚██╔╝██║《《──═─═──·* ·· ˙˙
+  ╚████╔╝ ██║  ██║╚██████╗╚██████╔╝╚██████╔╝██║ ╚═╝ ██║ 《《─═─═──* · · ˙
+   ╚═══╝  ╚═╝  ╚═╝ ╚═════╝ ╚═════╝  ╚═════╝ ╚═╝     ╚═╝ 《───═─═─· ··* ˙˙ ˙
+
+ version: 0.35.7 | compiled: Wed, 28 Oct 2026 00:21:51 UTC
+ https://quobix.com/vacuum/ | https://github.com/daveshanley/vacuum
+
+ vacuuming file 'openapi/cloudflare.yaml' against 55 rules: https://quobix.com/vacuum/rulesets/recommended
+
+ category              ✗ errors      ▲ warnings    ● info                                                  
+ ────────────────────  ────────────  ────────────  ────────────────────────────────────────────────────────
+ Operations            0             797           0                                                       
+ Tags                  0             3,799         0                                                       
+ Schemas               364           12,899        33                                                      
+ Descriptions          0             10,704        22,328                                                  
+ Security              9             0             0                                                       
+ Examples              0             14,245        0                                                       
+ ────────────────────  ────────────  ────────────  ────────────────────────────────────────────────────────
+ total                 373           42,444        22,361                                                  
+
+ rule                                      violations    quality impact                                    
+ ────────────────────────────────────────  ────────────  ──────────────────────────────────────────────────
+ description-duplication                   22,328        ██████████████████████████████████████████████████
+ camel-case-properties                     12,356        ███████████████████████████                       
+ oas3-missing-example                      12,007        ██████████████████████████                        
+ oas3-parameter-description                5,569         ████████████                                      
+ component-description                     3,912         ████████                                          
+ operation-tag-defined                     3,799         ████████                                          
+ oas3-valid-schema-example                 2,238         █████                                             
+ operation-description                     1,223         ██                                                
+ paths-kebab-case                          716           █                                                 
+ no-unnecessary-combinator                 348                                                             
+ ────────────────────────────────────────  ────────────  ──────────────────────────────────────────────────
+ total                                     65,178      
+ ... and 11 more rules
+
+ --> use the <dashboard> command to be able to navigate results interactively <--
+
+ | Quality Score: 10/100 [🥵]
+
+ | ✗ Failed with 373 errors, 42,444 warnings and 22,361 informs.
+
+ use --debug if you want to enable developer logging
+
+exit 1
