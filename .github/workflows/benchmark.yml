@@ -46,23 +46,15 @@ jobs:
           echo "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" > results/run.txt
           date -u +"%Y-%m-%d %H:%M UTC" >> results/run.txt
 
-      # The latest version of each source listed in the README. Every description is bundled into one file.
+      # The latest version of each source listed in the README, bundled into one file straight from its URL.
       - name: Fetch descriptions
         run: |
-          mkdir sources
-          curl -fsSL -o sources/stripe.yaml https://raw.githubusercontent.com/stripe/openapi/master/openapi/spec3.yaml
-          curl -fsSL -o sources/aws-ec2.yaml https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amazonaws.com/ec2/2016-11-15/openapi.yaml
-          curl -fsSL -o sources/github.yaml https://raw.githubusercontent.com/github/rest-api-description/main/descriptions/api.github.com/api.github.com.yaml
-          curl -fsSL -o sources/cloudflare.yaml https://raw.githubusercontent.com/cloudflare/api-schemas/main/openapi.yaml
-          git clone -q --depth 1 https://github.com/digitalocean/openapi sources/digitalocean
-          git clone -q --depth 1 --filter=blob:none --sparse https://github.com/Azure/azure-rest-api-specs sources/azure
-          git -C sources/azure sparse-checkout set specification/common-types specification/compute/resource-manager/Microsoft.Compute/Compute/common-types specification/compute/resource-manager/Microsoft.Compute/Compute/stable/2026-04-01
-          redocly bundle sources/stripe.yaml -o openapi/stripe.yaml
-          redocly bundle sources/aws-ec2.yaml -o openapi/aws-ec2.yaml
-          redocly bundle sources/github.yaml -o openapi/github.yaml
-          redocly bundle sources/cloudflare.yaml -o openapi/cloudflare.yaml
-          redocly bundle sources/digitalocean/specification/DigitalOcean-public.v2.yaml -o openapi/digitalocean.yaml
-          redocly bundle sources/azure/specification/compute/resource-manager/Microsoft.Compute/Compute/stable/2026-04-01/ComputeRP.json -o openapi/azure.yaml
+          redocly bundle https://raw.githubusercontent.com/Azure/azure-rest-api-specs/main/specification/compute/resource-manager/Microsoft.Compute/Compute/stable/2026-04-01/ComputeRP.json -o openapi/azure.yaml
+          redocly bundle https://raw.githubusercontent.com/stripe/openapi/master/openapi/spec3.yaml -o openapi/stripe.yaml
+          redocly bundle https://raw.githubusercontent.com/digitalocean/openapi/main/specification/DigitalOcean-public.v2.yaml -o openapi/digitalocean.yaml
+          redocly bundle https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amazonaws.com/ec2/2016-11-15/openapi.yaml -o openapi/aws-ec2.yaml
+          redocly bundle https://raw.githubusercontent.com/github/rest-api-description/main/descriptions/api.github.com/api.github.com.yaml -o openapi/github.yaml
+          redocly bundle https://raw.githubusercontent.com/cloudflare/api-schemas/main/openapi.yaml -o openapi/cloudflare.yaml
           for file in openapi/*.yaml; do echo "$(basename $file .yaml) $(redocly stats $file --format json | jq .operations.total) $(stat -c %s $file)"; done | tee results/descriptions.txt
 
       - name: vacuum
