@@ -1,6 +1,6 @@
 Linting OpenAPI document...
                            
-Lint report written to: /home/runner/.speakeasy/temp/lint-report-07bf68f6d1eca4224a7e5aafa680060d-3894626693.html
+Lint report written to: /home/runner/.speakeasy/temp/lint-report-225603d7548d70fd9aee7dbf7179c5d9-263480289.html
 INFO    validation hint: [line 1:1] generator-retries - retries should be configured - consider adding x-speakeasy-retries[0m extension globally or per-operation
 INFO    validation hint: [line 1628:7] generator-pagination - pagination might be supported by this operation - consider adding x-speakeasy-pagination[0m extension
 INFO    validation hint: [line 2907:7] generator-pagination - pagination might be supported by this operation - consider adding x-speakeasy-pagination[0m extension

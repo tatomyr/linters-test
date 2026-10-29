@@ -1,5 +1,5 @@
 
-/home/runner/work/linters-test/linters-test/openapi/stripe.yaml
+/home/runner/work/oasbench/oasbench/openapi/stripe.yaml
    13:10   warning  oas3-server-trailing-slash  Server URL must not have trailing slash.                       servers[0].url
    19:9    warning  operation-tags              Operation must have non-empty "tags" array.                    paths./v1/account.get
    58:10   warning  operation-tags              Operation must have non-empty "tags" array.                    paths./v1/account_links.post

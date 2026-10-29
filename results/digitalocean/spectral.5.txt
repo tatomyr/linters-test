@@ -1,5 +1,5 @@
 
-/home/runner/work/linters-test/linters-test/openapi/digitalocean.yaml
+/home/runner/work/oasbench/oasbench/openapi/digitalocean.yaml
    5:16    warning  info-description                 Info "description" must be present and non-empty string.           info.description
   1417:15  warning  oas3-operation-security-defined  "action_gateway:read" must be listed among scopes.                 paths./v2/action-gateway/actors/{actor_id}/limits.get.security[0].bearer_auth[0]
   1473:15  warning  oas3-operation-security-defined  "action_gateway:create" must be listed among scopes.               paths./v2/action-gateway/actors/{actor_id}/limits:clear.post.security[0].bearer_auth[0]

@@ -1,5 +1,5 @@
 
-/home/runner/work/linters-test/linters-test/openapi/aws-ec2.yaml
+/home/runner/work/oasbench/oasbench/openapi/aws-ec2.yaml
    125:9   warning  operation-tags             Operation must have non-empty "tags" array.                                                                                                             paths./#Action=AcceptAddressTransfer.get
   182:10   warning  operation-tags             Operation must have non-empty "tags" array.                                                                                                             paths./#Action=AcceptAddressTransfer.post
    214:9   warning  operation-tags             Operation must have non-empty "tags" array.                                                                                                             paths./#Action=AcceptReservedInstancesExchangeQuote.get
