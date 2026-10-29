@@ -11,7 +11,7 @@ const START = '<!-- BENCHMARK:START -->';
 const END = '<!-- BENCHMARK:END -->';
 
 const { RUNS, PAUSE_SECONDS, TIMEOUT_SECONDS } = process.env;
-const KILLED_EXIT_CODE = 137;
+const TIMEOUT_EXIT_CODE = 124;
 const TIMEOUT_MINUTES = TIMEOUT_SECONDS / 60;
 
 const descriptionNames = {
@@ -32,24 +32,32 @@ const descriptions = readRows('descriptions.txt')
   .map(([id, operations, bytes]) => ({ id, name: descriptionNames[id], operations: Number(operations), size: `${(bytes / 1e6).toFixed(1)} MB` }))
   .sort((left, right) => left.operations - right.operations);
 
-function medianCell(description, tool) {
+function summarizeRuns(description, tool) {
   const times = readResult(description.id, `${tool}.times`).trim().split('\n').map(Number).sort((left, right) => left - right);
   const exitCode = Number(readResult(description.id, `${tool}.1.txt`).match(/^exit (\d+)$/m)[1]);
-  const outputLink = `results/${description.id}/${tool}.1.txt`;
-  if (exitCode === KILLED_EXIT_CODE) {
-    return `[☠️ > ${TIMEOUT_MINUTES} min](${outputLink})`;
-  }
   const diedFromSignal = exitCode > 128;
-  if (diedFromSignal) {
-    return `[💥 crashed](${outputLink})`;
-  }
-  const median = times[Math.floor(times.length / 2)];
-  return `[${median.toFixed(2)} s](${outputLink})`;
+  return {
+    median: times[Math.floor(times.length / 2)],
+    isFinished: exitCode !== TIMEOUT_EXIT_CODE && !diedFromSignal,
+    outputLink: `results/${description.id}/${tool}.1.txt`,
+  };
+}
+
+function formatColumnCells(description) {
+  const summaries = tools.map((tool) => summarizeRuns(description, tool));
+  const finishedMedians = summaries.filter(({ isFinished }) => isFinished).map(({ median }) => median);
+  const fastest = Math.min(...finishedMedians);
+  const slowest = Math.max(...finishedMedians);
+  return summaries.map(({ median, isFinished, outputLink }) => {
+    const marker = !isFinished ? '☠️ ' : median === fastest ? '🐎 ' : median === slowest ? '🐌 ' : '';
+    return `[${marker}${median.toFixed(2)} s](${outputLink})`;
+  });
 }
 
 const header = ['Tool', ...descriptions.map((description) => `${description.name}<br>${description.operations.toLocaleString('en-US')} ops, ${description.size}`)];
 const alignment = ['---', ...descriptions.map(() => '---:')];
-const rows = tools.map((tool) => [`\`${tool}@${toolVersions[tool]}\``, ...descriptions.map((description) => medianCell(description, tool))]);
+const columns = descriptions.map(formatColumnCells);
+const rows = tools.map((tool, index) => [`\`${tool}@${toolVersions[tool]}\``, ...columns.map((cells) => cells[index])]);
 const table = [header, alignment, ...rows].map((cells) => `| ${cells.join(' | ')} |`).join('\n');
 
 const [runUrl, runDate] = readResult('run.txt').trim().split('\n');
@@ -58,7 +66,8 @@ const rendered = [
   `Generated ${runDate} by [this workflow run](${runUrl}) on ${readResult('machine.txt').trim()}.`,
   `Each command ran ${RUNS} times, one after another, after a ${PAUSE_SECONDS} s pause; ` +
     'the time is wall-clock from process start to exit, as `time` reports it, and the table shows the median. ' +
-    `A command that did not finish within ${TIMEOUT_MINUTES} minutes was killed and not repeated. 💥 marks a command that crashed; its output has the error.`,
+    `A command that did not finish within ${TIMEOUT_MINUTES} minutes was killed and not repeated. ☠️ marks a command that was killed or crashed. ` +
+    '🐎 marks the fastest tool for each API description, and 🐌 the slowest.',
   '',
   table,
   END,

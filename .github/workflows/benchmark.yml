@@ -10,7 +10,6 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  TIMEFORMAT: "%R"
   RUNS: 5
   PAUSE_SECONDS: 5
   TIMEOUT_SECONDS: 300
@@ -29,7 +28,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
-          npm install -g @redocly/cli@latest @quobix/vacuum@latest @stoplight/spectral-cli@latest @scalar/cli@latest
+          npm install -g @redocly/cli@snapshot @scalar/cli@latest @stoplight/spectral-cli@latest @quobix/vacuum@latest
           curl -fsSL https://go.speakeasy.com/cli-install.sh | sh
 
       - name: Record versions and machine
@@ -37,10 +36,10 @@ jobs:
           rm -rf results && mkdir results
           {
             echo "redocly $(redocly --version)"
-            echo "vacuum $(vacuum version)"
-            echo "spectral $(spectral --version)"
             echo "scalar $(scalar --version)"
             echo "speakeasy $(speakeasy --version | head -1 | awk '{print $NF}')"
+            echo "spectral $(spectral --version)"
+            echo "vacuum $(vacuum version)"
           } | tee results/versions.txt
           echo "$(lscpu | sed -n 's/^Model name: *//p'), $(nproc) cores, $(free -g | awk '/^Mem/ {print $2}') GB RAM, $(uname -sr), Node $(node --version)" | tee results/machine.txt
           echo "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" > results/run.txt
@@ -57,12 +56,6 @@ jobs:
           redocly bundle https://raw.githubusercontent.com/cloudflare/api-schemas/main/openapi.yaml -o openapi/cloudflare.yaml
           for file in openapi/*.yaml; do echo "$(basename $file .yaml) $(redocly stats $file --format json | jq .operations.total) $(stat -c %s $file)"; done | tee results/descriptions.txt
 
-      - name: vacuum
-        run: scripts/bench.sh vacuum vacuum lint
-
-      - name: Spectral
-        run: scripts/bench.sh spectral spectral lint --ruleset .spectral.yaml
-
       - name: Redocly CLI
         run: scripts/bench.sh redocly redocly lint
 
@@ -71,6 +64,12 @@ jobs:
 
       - name: Speakeasy CLI
         run: scripts/bench.sh speakeasy env -u GITHUB_ACTIONS speakeasy lint openapi --non-interactive --schema
+
+      - name: Spectral
+        run: scripts/bench.sh spectral spectral lint --ruleset .spectral.yaml
+
+      - name: vacuum
+        run: scripts/bench.sh vacuum vacuum lint
 
       - name: Render README.md
         run: node scripts/render-readme.mjs
