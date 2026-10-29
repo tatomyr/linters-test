@@ -55,7 +55,7 @@ function markColumnCells(description) {
   }));
 }
 
-const formatCell = ({ marker, median, outputLink }) => `[${marker && `${marker} `}${median.toFixed(2)} s](${outputLink})`;
+const formatCell = ({ marker, median, outputLink }) => `${marker}<br>[${median.toFixed(2)} s](${outputLink})`;
 
 const columns = descriptions.map(markColumnCells);
 const toolRows = tools.map((tool, index) => {
@@ -66,9 +66,9 @@ const toolRows = tools.map((tool, index) => {
 // Fewer ☠️ first, then fewer 🐌, then more 🐎.
 toolRows.sort((left, right) => left.deaths - right.deaths || left.losses - right.losses || right.wins - left.wins);
 
-const header = ['Tool', ...descriptions.map((description) => `${description.name}<br>${description.operations.toLocaleString('en-US')} ops, ${description.size}`)];
-const alignment = ['---', ...descriptions.map(() => '---:')];
-const rows = toolRows.map(({ tool, cells }) => [`\`${tool}@${toolVersions[tool]}\``, ...cells.map(formatCell)]);
+const header = ['Tool', ...descriptions.map((description) => `${description.name}<br><small>${description.operations} ops<br>${description.size}</small>`)];
+const alignment = ['---', ...descriptions.map(() => ':---:')];
+const rows = toolRows.map(({ tool, cells }) => [`**${tool}**<br><small>v${toolVersions[tool]}</small>`, ...cells.map(formatCell)]);
 const table = [header, alignment, ...rows].map((cells) => `| ${cells.join(' | ')} |`).join('\n');
 
 const [runUrl, runDate] = readResult('run.txt').trim().split('\n');
