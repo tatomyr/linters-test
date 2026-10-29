@@ -1,7 +1,7 @@
 # OpenAPI Linter Race
 
 Speed benchmark of OpenAPI linters on public API descriptions.
-Every linter runs at its latest release (Redocly CLI at its latest snapshot) with its default ruleset; Spectral has none, so it gets [`.spectral.yaml`](.spectral.yaml), which extends `spectral:oas`.
+Every linter runs at its latest release (Redocly CLI also at its latest snapshot) with its default ruleset; Spectral has none, so it gets [`.spectral.yaml`](.spectral.yaml), which extends `spectral:oas`.
 
 ## Results
 

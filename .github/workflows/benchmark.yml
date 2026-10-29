@@ -29,6 +29,7 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
           npm install -g @redocly/cli@snapshot @scalar/cli@latest @stoplight/spectral-cli@latest @quobix/vacuum@latest
+          npm install --prefix ~/redocly-latest @redocly/cli@latest
           curl -fsSL https://go.speakeasy.com/cli-install.sh | sh
 
       - name: Record versions and machine
@@ -36,6 +37,7 @@ jobs:
           rm -rf results && mkdir results
           {
             echo "redocly $(redocly --version)"
+            echo "redocly-latest $(~/redocly-latest/node_modules/.bin/redocly --version)"
             echo "scalar $(scalar --version)"
             echo "speakeasy $(speakeasy --version | head -1 | awk '{print $NF}')"
             echo "spectral $(spectral --version)"
@@ -58,6 +60,9 @@ jobs:
 
       - name: Redocly CLI
         run: scripts/bench.sh redocly redocly lint
+
+      - name: Redocly CLI latest
+        run: scripts/bench.sh redocly-latest ~/redocly-latest/node_modules/.bin/redocly lint
 
       - name: Scalar CLI
         run: scripts/bench.sh scalar scalar document lint

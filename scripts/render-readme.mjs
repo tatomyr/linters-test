@@ -43,21 +43,32 @@ function summarizeRuns(description, tool) {
   };
 }
 
-function formatColumnCells(description) {
+function markColumnCells(description) {
   const summaries = tools.map((tool) => summarizeRuns(description, tool));
   const finishedMedians = summaries.filter(({ isFinished }) => isFinished).map(({ median }) => median);
   const fastest = Math.min(...finishedMedians);
   const slowest = Math.max(...finishedMedians);
-  return summaries.map(({ median, isFinished, outputLink }) => {
-    const marker = !isFinished ? '☠️ ' : median === fastest ? '🐎 ' : median === slowest ? '🐌 ' : '';
-    return `[${marker}${median.toFixed(2)} s](${outputLink})`;
-  });
+  return summaries.map(({ median, isFinished, outputLink }) => ({
+    marker: !isFinished ? '☠️' : median === fastest ? '🐎' : median === slowest ? '🐌' : '',
+    median,
+    outputLink,
+  }));
 }
+
+const formatCell = ({ marker, median, outputLink }) => `[${marker && `${marker} `}${median.toFixed(2)} s](${outputLink})`;
+
+const columns = descriptions.map(markColumnCells);
+const toolRows = tools.map((tool, index) => {
+  const cells = columns.map((column) => column[index]);
+  const countMarkers = (marker) => cells.filter((cell) => cell.marker === marker).length;
+  return { tool, cells, deaths: countMarkers('☠️'), wins: countMarkers('🐎'), losses: countMarkers('🐌') };
+});
+// Fewer ☠️ first, then fewer 🐌, then more 🐎.
+toolRows.sort((left, right) => left.deaths - right.deaths || left.losses - right.losses || right.wins - left.wins);
 
 const header = ['Tool', ...descriptions.map((description) => `${description.name}<br>${description.operations.toLocaleString('en-US')} ops, ${description.size}`)];
 const alignment = ['---', ...descriptions.map(() => '---:')];
-const columns = descriptions.map(formatColumnCells);
-const rows = tools.map((tool, index) => [`\`${tool}@${toolVersions[tool]}\``, ...columns.map((cells) => cells[index])]);
+const rows = toolRows.map(({ tool, cells }) => [`\`${tool}@${toolVersions[tool]}\``, ...cells.map(formatCell)]);
 const table = [header, alignment, ...rows].map((cells) => `| ${cells.join(' | ')} |`).join('\n');
 
 const [runUrl, runDate] = readResult('run.txt').trim().split('\n');
