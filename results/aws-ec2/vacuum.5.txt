@@ -6,7 +6,7 @@
   ╚████╔╝ ██║  ██║╚██████╗╚██████╔╝╚██████╔╝██║ ╚═╝ ██║ 《《─═─═──* · · ˙
    ╚═══╝  ╚═╝  ╚═╝ ╚═════╝ ╚═════╝  ╚═════╝ ╚═╝     ╚═╝ 《───═─═─· ··* ˙˙ ˙
 
- version: 0.35.7 | compiled: Wed, 28 Oct 2026 00:21:51 UTC
+ version: 0.36.0 | compiled: Thu, 29 Oct 2026 14:08:44 UTC
  https://quobix.com/vacuum/ | https://github.com/daveshanley/vacuum
 
  vacuuming file 'openapi/aws-ec2.yaml' against 55 rules: https://quobix.com/vacuum/rulesets/recommended
@@ -29,8 +29,8 @@
  oas3-parameter-description                2,383         ██████████████                                    
  component-description                     2,217         █████████████                                     
  operation-tags                            1,188         ███████                                           
- operation-description                     594           ███                                               
  paths-kebab-case                          594           ███                                               
+ operation-description                     594           ███                                               
  oas3-valid-schema-example                 3                                                               
  ────────────────────────────────────────  ────────────  ──────────────────────────────────────────────────
  total                                     26,400      

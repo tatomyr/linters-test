@@ -6,7 +6,7 @@
   ╚████╔╝ ██║  ██║╚██████╗╚██████╔╝╚██████╔╝██║ ╚═╝ ██║ 《《─═─═──* · · ˙
    ╚═══╝  ╚═╝  ╚═╝ ╚═════╝ ╚═════╝  ╚═════╝ ╚═╝     ╚═╝ 《───═─═─· ··* ˙˙ ˙
 
- version: 0.35.7 | compiled: Wed, 28 Oct 2026 00:21:51 UTC
+ version: 0.36.0 | compiled: Thu, 29 Oct 2026 14:08:44 UTC
  https://quobix.com/vacuum/ | https://github.com/daveshanley/vacuum
 
  vacuuming file 'openapi/digitalocean.yaml' against 55 rules: https://quobix.com/vacuum/rulesets/recommended
@@ -15,33 +15,33 @@
  ────────────────────  ────────────  ────────────  ────────────────────────────────────────────────────────
  Contract Information  1             0             0                                                       
  Operations            0             209           0                                                       
- Schemas               13            2,857         0                                                       
- Descriptions          0             980           1,216                                                   
- Examples              0             501           0                                                       
+ Schemas               13            2,869         0                                                       
+ Descriptions          0             987           1,229                                                   
+ Examples              0             505           0                                                       
  ────────────────────  ────────────  ────────────  ────────────────────────────────────────────────────────
- total                 14            4,547         1,216                                                   
+ total                 14            4,570         1,229                                                   
 
  rule                                      violations    quality impact                                    
  ────────────────────────────────────────  ────────────  ──────────────────────────────────────────────────
- camel-case-properties                     2,809         ██████████████████████████████████████████████████
- description-duplication                   1,216         █████████████████████                             
- component-description                     712           ████████████                                      
- oas3-missing-example                      496           ████████                                          
- operation-description                     265           ████                                              
+ camel-case-properties                     2,821         ██████████████████████████████████████████████████
+ description-duplication                   1,229         █████████████████████                             
+ component-description                     716           ████████████                                      
+ oas3-missing-example                      500           ████████                                          
+ operation-description                     268           ████                                              
  paths-kebab-case                          189           ███                                               
  no-unnecessary-combinator                 32                                                              
  oas-schema-check                          13                                                              
  no-request-body                           11                                                              
  nullable-enum-contains-null               10                                                              
  ────────────────────────────────────────  ────────────  ──────────────────────────────────────────────────
- total                                     5,777       
+ total                                     5,813       
  ... and 7 more rules
 
  --> use the <dashboard> command to be able to navigate results interactively <--
 
  | Quality Score: 10/100 [🥵]
 
- | ✗ Failed with 14 errors, 4,547 warnings and 1,216 informs.
+ | ✗ Failed with 14 errors, 4,570 warnings and 1,229 informs.
 
  use --debug if you want to enable developer logging
 

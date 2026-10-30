@@ -6,7 +6,7 @@
   ╚████╔╝ ██║  ██║╚██████╗╚██████╔╝╚██████╔╝██║ ╚═╝ ██║ 《《─═─═──* · · ˙
    ╚═══╝  ╚═╝  ╚═╝ ╚═════╝ ╚═════╝  ╚═════╝ ╚═╝     ╚═╝ 《───═─═─· ··* ˙˙ ˙
 
- version: 0.35.7 | compiled: Wed, 28 Oct 2026 00:21:51 UTC
+ version: 0.36.0 | compiled: Thu, 29 Oct 2026 14:08:44 UTC
  https://quobix.com/vacuum/ | https://github.com/daveshanley/vacuum
 
  vacuuming file 'openapi/azure.yaml' against 55 rules: https://quobix.com/vacuum/rulesets/recommended
@@ -25,8 +25,8 @@
  no-$ref-siblings                          302           ██████████                                        
  oas2-unused-definition                    13                                                              
  oas2-parameter-description                10                                                              
- circular-references                       1                                                               
  no-http-verbs-in-path                     1                                                               
+ circular-references                       1                                                               
  ────────────────────────────────────────  ────────────  ──────────────────────────────────────────────────
  total                                     1,700       
 
